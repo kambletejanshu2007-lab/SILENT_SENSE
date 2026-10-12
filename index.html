@@ -1,0 +1,549 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SilentSense | Smart Silent Zones</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon">🔕</span>
+      <div>
+        <h1>SilentSense</h1>
+        <p>Smart Location-Based Sound Manager</p>
+      </div>
+    </div>
+    <span class="status" id="appStatus">● Ready</span>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">SMART QUIET ZONES</p>
+        <h2>Silence when it matters.</h2>
+        <p>Manage quiet zones around your college, library and more.</p>
+      </div>
+      <div class="hero-icon">🔔</div>
+    </section>
+
+    <section class="status-card">
+      <div class="status-icon" id="soundIcon">🔔</div>
+      <div class="status-info">
+        <p>SIMULATED SOUND STATUS</p>
+        <h2 id="soundStatus">Normal Mode</h2>
+        <span id="soundMessage">No active silent zone</span>
+      </div>
+      <span class="pill" id="modePill">ACTIVE</span>
+    </section>
+
+    <section class="stats">
+      <article class="stat-card">
+        <span>📍</span>
+        <p>Saved Zones</p>
+        <h2 id="zoneCount">0</h2>
+      </article>
+      <article class="stat-card">
+        <span>🔕</span>
+        <p>Active Zones</p>
+        <h2 id="activeCount">0</h2>
+      </article>
+      <article class="stat-card">
+        <span>⚙️</span>
+        <p>Events Processed</p>
+        <h2 id="eventCount">0</h2>
+      </article>
+    </section>
+
+    <div class="content-grid">
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Add Silent Zone</h2>
+            <p>Create a location-based quiet zone.</p>
+          </div>
+          <span>＋</span>
+        </div>
+
+        <form id="zoneForm">
+          <label for="zoneName">Zone Name</label>
+          <input id="zoneName" type="text"
+                 placeholder="e.g. College Library" required>
+
+          <label for="zoneType">Location Type</label>
+          <select id="zoneType">
+            <option value="College">College</option>
+            <option value="Library">Library</option>
+            <option value="Hospital">Hospital</option>
+            <option value="Classroom">Classroom</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <label for="zoneRadius">Silent Zone Radius</label>
+          <select id="zoneRadius">
+            <option value="100">100 metres</option>
+            <option value="200" selected>200 metres</option>
+            <option value="300">300 metres</option>
+            <option value="500">500 metres</option>
+          </select>
+
+          <div class="coordinate-grid">
+            <div>
+              <label for="latitude">Latitude</label>
+              <input id="latitude" type="number" step="any"
+                     placeholder="Optional">
+            </div>
+            <div>
+              <label for="longitude">Longitude</label>
+              <input id="longitude" type="number" step="any"
+                     placeholder="Optional">
+            </div>
+          </div>
+
+          <button type="button" class="btn-secondary" id="locationBtn">
+            ◎ Use My Current Location
+          </button>
+
+          <button type="submit" class="btn-primary">
+            + Add Silent Zone
+          </button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Your Silent Zones</h2>
+            <p>Manage your saved locations.</p>
+          </div>
+          <span>📍</span>
+        </div>
+
+        <div id="zoneList" class="zone-list">
+          <div class="empty-state">
+            <span>📍</span>
+            <h3>No zones added yet</h3>
+            <p>Add a location to get started.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel simulation-panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Simulation Centre</h2>
+          <p>Demonstrate how SilentSense processes location events.</p>
+        </div>
+        <span>▶</span>
+      </div>
+
+      <div class="notice">
+        ℹ️ Demo mode changes the website status only. It does not
+        change your phone's actual ringtone or silent setting.
+      </div>
+
+      <label for="simulationZone">Select a Zone</label>
+      <select id="simulationZone">
+        <option value="">Add a zone first</option>
+      </select>
+
+      <div class="simulation-buttons">
+        <button id="enterBtn" class="btn-primary" type="button">
+          ↘ Simulate Entering Zone
+        </button>
+        <button id="exitBtn" class="btn-secondary" type="button">
+          ↗ Simulate Leaving Zone
+        </button>
+        <button id="resetBtn" class="btn-danger" type="button">
+          Reset Simulation
+        </button>
+        <button id="soundToggleBtn" type="button">
+  🔊 Sound Alerts: ON
+</button>
+
+
+<button onclick="trackMyLocation()">
+  📍 Detect My Real Location
+</button>
+  
+
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Activity History</h2>
+          <p>Recent location events and system actions.</p>
+        </div>
+        <button class="text-button" id="clearHistory" type="button">
+          Clear
+        </button>
+      </div>
+      <div id="historyList" class="history-list">
+        <p class="muted">No activity recorded yet.</p>
+      </div>
+    </section>
+
+    <footer>
+      <p>SilentSense · Data Structures Mini Project</p>
+      <p>Built with HTML, CSS & JavaScript</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+  
+<!-- SilentSense Advanced Features -->
+<section id="ss-advanced" class="ss-panel">
+  <h2>SilentSense Smart Zones</h2>
+  <p id="ss-status">Detection is OFF</p>
+
+  <button id="ss-toggle">Turn ON Detection</button>
+  <button id="ss-find">Check My Location</button>
+
+  <hr>
+  <h3>Add a Smart Place</h3>
+
+  <label for="ss-place">Place type</label>
+  <select id="ss-place">
+    <option>College</option>
+    <option>School</option>
+    <option>Hospital</option>
+    <option>Library</option>
+    <option>Temple</option>
+    <option>Class</option>
+    <option>Custom</option>
+  </select>
+
+  <label for="ss-zone-name">Place name</label>
+  <input id="ss-zone-name" placeholder="e.g. My College">
+
+  <label for="ss-radius">Zone radius (metres)</label>
+  <input id="ss-radius" type="number" min="50"
+         max="5000" value="200">
+
+  <button id="ss-save-zone">Save Current Location as Zone</button>
+
+  <h3>Saved Places</h3>
+  <ul id="ss-zones"></ul>
+
+  <h3>Activity History</h3>
+  <button id="ss-clear-history">Clear History</button>
+  <ul id="ss-history"></ul>
+</section>
+
+<!-- SMART CAMPUS GUARDIAN: Standalone feature -->
+<section id="guardian" style="font-family:Arial,sans-serif;background:#101827;color:#eef5ff;padding:22px;border-radius:18px;max-width:850px;margin:25px auto">
+  <div style="color:#54e0b5;font-size:12px;letter-spacing:2px">SILENTSENSE • ADVANCED MODULE</div>
+  <h2 style="margin-bottom:6px">🛡️ Smart Campus Guardian</h2>
+  <p style="color:#b8c6da">Location awareness · Priority Queue · Activity monitoring</p>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:20px 0">
+    <div style="background:#1c2b40;padding:15px;border-radius:12px;flex:1;min-width:120px">
+      <small>Monitor</small>
+      <h3 id="g-status">DEMO MODE</h3>
+    </div>
+    <div style="background:#1c2b40;padding:15px;border-radius:12px;flex:1;min-width:120px">
+      <small>Pending Alerts</small>
+      <h3 id="g-count">0</h3>
+    </div>
+    <div style="background:#1c2b40;padding:15px;border-radius:12px;flex:1;min-width:120px">
+      <small>Events Logged</small>
+      <h3 id="g-events">0</h3>
+    </div>
+  </div>
+
+  <h3>📍 Zone Control</h3>
+  <label for="g-zone">Choose a demo zone</label>
+  <select id="g-zone" style="display:block;width:100%;padding:12px;margin:8px 0;background:#1c2b40;color:white;border:1px solid #43536b;border-radius:8px">
+    <option>College</option>
+    <option>Library</option>
+    <option>Hospital</option>
+    <option>Examination Hall</option>
+  </select>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button id="g-enter">Simulate Entry</button>
+    <button id="g-exit">Simulate Exit</button>
+    <button id="g-clear">Clear Alerts</button>
+  </div>
+
+  <h3 style="margin-top:24px">⚡ Priority Alert Queue</h3>
+  <p style="color:#b8c6da;font-size:13px">Higher-priority alerts are processed first.</p>
+  <div id="g-alerts" aria-live="polite">No pending alerts.</div>
+
+  <h3 style="margin-top:24px">📋 Activity Log</h3>
+  <button id="g-export">Export Activity CSV</button>
+  <ol id="g-log"></ol>
+  <p style="font-size:12px;color:#9eacc1">
+    Demo Mode uses simulated events; it does not contact emergency services
+    or change your phone's system sound settings.
+  </p>
+</section>
+
+<style>
+#guardian button {
+  background:#176b55;color:white;border:0;border-radius:8px;
+  padding:11px 14px;margin:4px 4px 4px 0;cursor:pointer
+}
+#guardian button:hover {background:#21886d}
+#guardian #g-alerts > div {
+  background:#1c2b40;padding:12px;margin:8px 0;border-radius:9px;
+  border-left:4px solid #54e0b5
+}
+#guardian #g-log li {padding:5px;color:#d4dfef}
+#guardian select:focus,#guardian button:focus {
+  outline:2px solid #54e0b5;outline-offset:2px
+}
+
+
+/* GPS section blends into the existing website */
+#gps-zone {
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  padding: 20px 0;
+  margin: 20px 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+#gps-zone button {
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Same website background for both SilentSense modules */
+#guardian,
+#gps-zone {
+  background: transparent !important;
+  color: inherit;
+  font-family: inherit;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 20px 0;
+}
+
+/* Keep cards consistent with the existing website */
+#guardian > div,
+#guardian #g-alerts > div {
+  border-radius: 10px;
+}
+
+/* Buttons */
+#guardian button,
+#gps-zone button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+</style>
+
+<script>
+(() => {
+  const root = document.getElementById("guardian");
+  if (!root || root.dataset.ready) return;
+  root.dataset.ready = "yes";
+
+  const $ = id => document.getElementById(id);
+  const queue = [];
+  const history = [];
+  let nextId = 1;
+
+  // Priority Queue: highest priority first.
+  function enqueue(message, priority) {
+    queue.push({
+      id: nextId++,
+      message,
+      priority,
+      time: new Date().toLocaleTimeString()
+    });
+    queue.sort((a, b) =>
+      b.priority - a.priority || a.id - b.id
+    );
+    render();
+  }
+
+  function record(message) {
+    history.unshift(new Date().toLocaleString() + " — " + message);
+    render();
+  }
+
+  function render() {
+    $("g-count").textContent = queue.length;
+    $("g-events").textContent = history.length;
+
+    const alerts = $("g-alerts");
+    alerts.replaceChildren();
+
+    if (!queue.length) {
+      alerts.textContent = "No pending alerts.";
+    }
+
+    queue.forEach(item => {
+      const card = document.createElement("div");
+      const title = document.createElement("strong");
+      const detail = document.createElement("p");
+      const done = document.createElement("button");
+
+      title.textContent =
+        (item.priority >= 3 ? "HIGH" :
+         item.priority === 2 ? "MEDIUM" : "NORMAL")
+        + " PRIORITY";
+
+      detail.textContent = item.message + " · " + item.time;
+      done.textContent = "Acknowledge";
+
+      done.addEventListener("click", () => {
+        const index = queue.findIndex(x => x.id === item.id);
+        if (index >= 0) {
+          queue.splice(index, 1);
+          record("Alert acknowledged: " + item.message);
+        }
+      });
+
+      card.append(title, detail, done);
+      alerts.append(card);
+    });
+
+    const log = $("g-log");
+    log.replaceChildren();
+
+    history.slice(0, 12).forEach(entry => {
+      const li = document.createElement("li");
+      li.textContent = entry;
+      log.append(li);
+    });
+  }
+
+  function simulate(action) {
+    const zone = $("g-zone").value;
+    const message = zone + ": " + action;
+
+    record(message);
+
+    if (action === "Entry detected") {
+      enqueue(
+        "Check silent-mode reminder for " + zone,
+        zone === "Examination Hall" ? 3 : 2
+      );
+    } else {
+      enqueue("Review zone status: " + zone, 1);
+    }
+  }
+
+  $("g-enter").addEventListener("click", () =>
+    simulate("Entry detected")
+  );
+
+  $("g-exit").addEventListener("click", () =>
+    simulate("Exit detected")
+  );
+
+  $("g-clear").addEventListener("click", () => {
+    queue.length = 0;
+    record("Pending alerts cleared");
+  });
+
+  $("g-export").addEventListener("click", () => {
+    const csv = [
+      "Activity",
+      ...history.map(value =>
+        '"' + value.replace(/"/g, '""') + '"'
+      )
+    ].join("\r\n");
+
+    const url = URL.createObjectURL(
+      new Blob(["\uFEFF" + csv], {type:"text/csv;charset=utf-8"})
+    );
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "SilentSense-Activity.csv";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+
+  render();
+})();
+</script>
+
+
+
+
+
+<section id="gps-zone" style="padding:20px;background:#101827;color:white;border-radius:15px;font-family:Arial;margin:20px 0">
+  <h2>📍 SilentSense GPS Zone Detector</h2>
+  <p id="gps-status">Location permission required.</p>
+  <button id="gps-start" style="padding:12px;background:#20c997;border:0;border-radius:8px;cursor:pointer">
+    Start GPS Detection
+  </button>
+  <p id="gps-coords"></p>
+  <p id="gps-zone-name">Zone: Not detected</p>
+</section>
+
+<script>
+(() => {
+  const start = document.getElementById("gps-start");
+  const status = document.getElementById("gps-status");
+  const coords = document.getElementById("gps-coords");
+  const zoneName = document.getElementById("gps-zone-name");
+
+  start.addEventListener("click", () => {
+    if (!navigator.geolocation) {
+      status.textContent = "Geolocation is not supported.";
+      return;
+    }
+
+    status.textContent = "Requesting location permission...";
+
+    navigator.geolocation.watchPosition(
+      position => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        coords.textContent =
+          "Latitude: " + lat.toFixed(5) +
+          " | Longitude: " + lon.toFixed(5);
+
+        status.textContent = "GPS detection is active.";
+
+        // Add your verified campus coordinates here.
+        const campusLat = 21.0937;
+        const campusLon = 79.0000;
+
+        const distance = getDistance(lat, lon, campusLat, campusLon);
+
+        zoneName.textContent = distance <= 150
+          ? "Zone: College area (approx. 150 m)"
+          : "Zone: Outside configured college area";
+      },
+      error => {
+        status.textContent =
+          "Location unavailable. Allow browser location permission and use localhost/HTTPS.";
+      },
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+    );
+  });
+
+  function getDistance(lat1, lon1, lat2, lon2) {
+    const rad = value => value * Math.PI / 180;
+    const dLat = rad(lat2 - lat1);
+    const dLon = rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(rad(lat1)) * Math.cos(rad(lat2)) *
+      Math.sin(dLon / 2) ** 2;
+    return 6371000 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+})();
+</script>
+
+</body>
+</html>
